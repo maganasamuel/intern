@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\ManualAuth\LoginController;
+use App\Http\Controllers\ManualAuth\{ForgotPasswordController, LoginController, ResetPasswordController};
 use App\Http\Controllers\StudentController;
 use Illuminate\Support\Facades\Route;
 
@@ -27,6 +27,23 @@ Route::controller(LoginController::class)
             });
 
         Route::post('logout', ['uses' => 'logout', 'as' => 'logout']);
+    });
+
+Route::name('password.')
+    ->group(function () {
+        Route::prefix('forgot-password')
+            ->controller(ForgotPasswordController::class)
+            ->group(function () {
+                Route::get('/', ['uses' => 'forgot_password_form', 'as' => 'request']);
+                Route::post('/', ['uses' => 'forgot_password', 'as' => 'email']);
+            });
+
+        Route::prefix('reset-password')
+            ->controller(ResetPasswordController::class)
+            ->group(function () {
+                Route::get('{token}', ['uses' => 'reset_password_form', 'as' => 'reset']);
+                Route::post('/', ['uses' => 'reset_password', 'as' => 'update']);
+            });
     });
 
 Route::get('/temp', function () {

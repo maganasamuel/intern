@@ -4,6 +4,19 @@
   <div class="container">
     <div class="row justify-content-center">
       <div class="col-lg-6">
+        <h1>{{ $title }}</h1>
+
+        @session('status')
+          <div class="alert alert-success alert-dismissible fade show"
+            role="alert">
+            {{ session('status') }}
+            <button type="button"
+              class="btn-close"
+              data-bs-dismiss="alert"
+              aria-label="Close"></button>
+          </div>
+        @endsession
+
         <form action="{{ route('login') }}"
           method="post"
           novalidate>
@@ -59,8 +72,11 @@
               </div>
             </div>
             <div class="card-footer">
-              <button type="submit"
-                class="btn btn-primary">Login</button>
+              <div class="d-flex align-items-center justify-content-between">
+                <button type="submit"
+                  class="btn btn-primary">Login</button>
+                <a href="{{ route('password.request') }}">Forgot Password</a>
+              </div>
             </div>
           </div>
         </form>
