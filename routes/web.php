@@ -45,12 +45,26 @@ Route::middleware(['guest'])
             });
     });
 
-Route::middleware(['auth', 'verified'])
+Route::middleware(['auth'])
     ->group(function () {
         Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
+        Route::withoutMiddleware(['verified'])
+            ->group(function () {
+                Route::get('email-verification-required', function () {
+                    return view('manual_auth.email-verification', [
+                        'title' => 'Email Verification Required',
+                    ]);
+                })->name('verification.notice');
+
+                Route::post('logout', [LoginController::class, 'logout'])
+                    ->name('logout');
+            });
+
+        // should only be accessed by admin
         Route::prefix('students')
             ->name('students.')
+            ->middleware('auth.role:admin')
             ->controller(StudentController::class)
             ->group(function () {
                 Route::get('/', ['uses' => 'index', 'as' => 'index']);
@@ -66,17 +80,15 @@ Route::middleware(['auth', 'verified'])
                     });
             });
 
-        Route::withoutMiddleware(['verified'])
-            ->group(function () {
-                Route::get('email-verification-required', function () {
-                    return view('manual_auth.email-verification', [
-                        'title' => 'Email Verification Required',
-                    ]);
-                })->name('verification.notice');
+        // should only be accessed by admin and registrar
+        Route::get('student-registration', function () {
+            return 'student registration';
+        })->middleware('auth.role:registrar,admin');
 
-                Route::post('logout', [LoginController::class, 'logout'])
-                    ->name('logout');
-            });
+        // should only be accessed by admin and cashier
+        Route::get('student-payments', function () {
+            return 'student payments';
+        })->middleware('auth.role:cashier,admin');
     });
 
 Route::prefix('temp')
@@ -84,7 +96,7 @@ Route::prefix('temp')
         Route::get('/temp', function () {
             /* session()->flash('greetings', 'Welcome to intern session.');
 
-    return redirect('/temp2'); */
+            return redirect('/temp2'); */
 
             session(['greetings' => 'hello world', 'message' => 'welcome to intern session']);
 
