@@ -29,6 +29,7 @@
             <th>Gender</th>
             <th>Date of Birth</th>
             <th>Address</th>
+            <th>Email</th>
             <th>Contact Number</th>
             <th>Scholarship Accredited</th>
             <th>Course</th>
@@ -42,6 +43,7 @@
               <td class="text-capitalize">{{ $student->gender }}</td>
               <td>{{ $student->dob->format('F j, Y') }}</td>
               <td>{{ $student->address }}</td>
+              <td>{{ $student->email }}</td>
               <td>{{ $student->contact_number }}</td>
               <td class="text-center">
                 <input type="checkbox"

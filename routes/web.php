@@ -1,8 +1,8 @@
 <?php
 
 use App\Http\Controllers\ManualAuth\{ForgotPasswordController, LoginController, ResetPasswordController};
-use App\Http\Controllers\StudentController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\{StudentController, UploadImageController};
+use Illuminate\Support\Facades\{Route, Storage};
 
 Route::get('/', function () {
     return view('welcome');
@@ -83,7 +83,7 @@ Route::middleware(['auth'])
         // should only be accessed by admin and registrar
         Route::get('student-registration', function () {
             return 'student registration';
-        })->middleware('auth.role:registrar,admin');
+        })->name('students.register')->middleware('auth.role:registrar,admin');
 
         // should only be accessed by admin and cashier
         Route::get('student-payments', function () {
@@ -113,3 +113,53 @@ Route::prefix('temp')
             return redirect('/temp/temp2');
         });
     });
+
+Route::prefix('upload-image')
+    ->name('image.upload')
+    ->controller(UploadImageController::class)
+    ->group(function () {
+        Route::get('/', ['uses' => 'form', 'as' => '.form']);
+        Route::post('/', ['uses' => 'upload']);
+    });
+
+Route::get('file', function () {
+    /* $contents = [
+        '- alice alpha',
+        '- bob bravo',
+        '- charlie delta',
+        '- dan delta',
+        '- ed echo',
+    ];
+
+    $contents = implode("\r\n", $contents);
+
+    $saved = Storage::put('todo.txt', $contents);
+
+    if ($saved) {
+        return 'todo text file has been written to disk';
+    }
+
+    return 'todo text file was not written to disk'; */
+
+    $filename = 'invalid-file.jpg';
+
+    if (Storage::exists($filename)) {
+        return Storage::get($filename);
+    }
+
+    return "File {$filename} does not exist.";
+
+    return 'written file';
+
+    return view('file', [
+        'url' => Storage::temporaryUrl('image.jpeg', now()->addMinute()),
+    ]);
+
+    return Storage::download('image.jpeg', 'sadaharu.jpeg');
+
+    return Storage::missing('orders/purchase.json') ? 'file is missing' : 'Purchase Order File exists.';
+
+    return Storage::exists('purchase.json') ? 'purchase order exists' : 'file does not exist';
+
+    return Storage::json('orders/purchase.json');
+});

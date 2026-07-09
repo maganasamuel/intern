@@ -4,9 +4,6 @@
   <div class="container">
     <h1 class="mb-3">{{ $title }}</h1>
     <div class="row">
-      <div class="col-12">{{ json_encode($errors->all()) }}</div>
-    </div>
-    <div class="row">
       <div class="col-lg-6">
         <form action="{{ route('students.store') }}"
           method="post"
@@ -62,11 +59,11 @@
                     name="gender"
                     class="form-control @error('gender') is-invalid @enderror form-select text-capitalize">
                     <option value=""
-                      @checked(!old('gender'))>- Select an option... -</option>
+                      @selected(!old('gender'))>- Select an option... -</option>
 
                     @foreach ($genders as $gender)
                       <option value="{{ $gender }}"
-                        @checked(old('gender' == $gender))>{{ $gender }}</option>
+                        @selected(old('gender') == $gender)>{{ $gender }}</option>
                     @endforeach
                   </select>
 

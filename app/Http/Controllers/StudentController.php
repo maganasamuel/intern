@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SaveStudentRequest;
 use App\Models\{Course, Student};
-use Illuminate\Validation\Rule;
 
 class StudentController extends Controller
 {
@@ -38,40 +38,9 @@ class StudentController extends Controller
         return view('students.create', compact('title', 'genders', 'courses'));
     }
 
-    public function store()
+    public function store(SaveStudentRequest $request)
     {
-        $data = request()->validate([
-            'first_name' => ['required', 'string', 'max:255'],
-            'middle_name' => ['nullable', 'string', 'max:255'],
-            'last_name' => ['required', 'string', 'max:255'],
-            'gender' => ['required', Rule::in(['male', 'female'])],
-            'dob' => ['required', 'date_format:Y-m-d'],
-            'address' => ['nullable', 'string'],
-            'contact_number' => ['nullable', 'string', 'max:255'],
-            'email' => [
-                'required',
-                'string',
-                'email:rfc,dns',
-                Rule::unique(Student::class),
-            ],
-            'scholarship_accredited' => ['boolean'],
-            'course_id' => [
-                'required',
-                Rule::exists(Course::class, 'id'),
-            ],
-        ], [], [
-            'first_name' => 'First Name',
-            'middle_name' => 'Middle Name',
-            'last_name' => 'Last Name',
-            'gender' => 'Gender',
-            'dob' => 'Date of Birth',
-            'address' => 'Address',
-            'contact_number' => 'Contact Number',
-            'scholarship_accredited' => 'Scholarship Accredited',
-            'course_id' => 'Course',
-        ]);
-
-        Student::create($data);
+        Student::create($request->validated());
 
         return to_route('students.index')->with('success', 'Student has been created.');
     }
@@ -87,43 +56,9 @@ class StudentController extends Controller
         return view('students.edit', compact('title', 'student', 'genders', 'courses'));
     }
 
-    public function update(Student $student)
+    public function update(SaveStudentRequest $request, Student $student)
     {
-        $data = request()->merge([
-            'scholarship_accredited' => request()->has('scholarship_accredited'),
-        ])->validate([
-            'first_name' => ['required', 'string', 'max:255'],
-            'middle_name' => ['nullable', 'string', 'max:255'],
-            'last_name' => ['required', 'string', 'max:255'],
-            'gender' => ['required', Rule::in(['male', 'female'])],
-            'dob' => ['required', 'date_format:Y-m-d'],
-            'address' => ['nullable', 'string'],
-            'contact_number' => ['nullable', 'string', 'max:255'],
-            'email' => [
-                'required',
-                'string',
-                'email:rfc,dns',
-                Rule::unique(Student::class)
-                    ->ignore($student),
-            ],
-            'scholarship_accredited' => ['required', 'boolean'],
-            'course_id' => [
-                'required',
-                Rule::exists(Course::class, 'id'),
-            ],
-        ], [], [
-            'first_name' => 'First Name',
-            'middle_name' => 'Middle Name',
-            'last_name' => 'Last Name',
-            'gender' => 'Gender',
-            'dob' => 'Date of Birth',
-            'address' => 'Address',
-            'contact_number' => 'Contact Number',
-            'scholarship_accredited' => 'Scholarship Accredited',
-            'course_id' => 'Course',
-        ]);
-
-        $student->update($data);
+        $student->update($request->validated());
 
         return to_route('students.index')->with('success', 'Student has been edited.');
     }
