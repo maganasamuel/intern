@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\{Builder, Model};
 
 class Student extends Model
 {
@@ -31,6 +32,33 @@ class Student extends Model
     {
         return Attribute::make(
             get: fn ($value, $attributes) => $attributes['first_name'] . ' ' . $attributes['middle_name'] . ' ' . $attributes['last_name']
+        );
+    }
+
+    #[Scope]
+    protected function filter(Builder $query, $filter = [])
+    {
+        $query->when(
+            $filter['keyword'] ?? '',
+            fn (Builder $query, $value) => $query->whereAny([
+                'first_name',
+                'middle_name',
+                'last_name',
+                'email',
+                'contact_number',
+            ], 'LIKE', "%{$value}%")
+        )->when(
+            ($filter['scholarship_accredited'] ?? '') == 'yes',
+            fn (Builder $query) => $query->where('scholarship_accredited', 1)
+        )->when(
+            ($filter['scholarship_accredited'] ?? '') == 'no',
+            fn (Builder $query) => $query->where('scholarship_accredited', 0)
+        )->when(
+            $filter['gender'] ?? '',
+            fn (Builder $query, $value) => $query->where('gender', $value)
+        )->when(
+            $filter['course'] ?? '',
+            fn (Builder $query, $value) => $query->where('course_id', $value)
         );
     }
 }

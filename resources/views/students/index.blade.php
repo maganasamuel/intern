@@ -21,6 +21,9 @@
           class="btn btn-primary">Create Student</a>
       </div>
     </div>
+
+    @include('students.filter')
+    
     <div class="table-responsive">
       <table class="table table-bordered table-striped table-hover">
         <thead>

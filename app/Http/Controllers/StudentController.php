@@ -9,13 +9,20 @@ class StudentController extends Controller
 {
     public function index()
     {
-        $students = Student::with('course')
-            ->latest()
-            ->paginate();
+        $genders = ['male', 'female'];
+
+        $courses = Course::all();
+
+        $query = Student::filter(request('filter'))
+            ->latest();
+
+        $students = $query->with('course')
+            ->paginate()
+            ->withQueryString();
 
         $title = 'Students';
 
-        return view('students.index', compact('title', 'students'));
+        return view('students.index', compact('title', 'genders', 'courses', 'students', 'query'));
     }
 
     public function show(Student $student)
