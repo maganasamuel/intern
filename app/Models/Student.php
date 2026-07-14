@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\StudentStatus;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -25,6 +26,7 @@ class Student extends Model
         return [
             'dob' => 'date',
             'scholarship_accredited' => 'boolean',
+            'status' => StudentStatus::class,
         ];
     }
 
@@ -59,6 +61,9 @@ class Student extends Model
         )->when(
             $filter['course'] ?? '',
             fn (Builder $query, $value) => $query->where('course_id', $value)
+        )->when(
+            $filter['status'] ?? '',
+            fn (Builder $query, $value) => $query->where('status', $value)
         );
     }
 }

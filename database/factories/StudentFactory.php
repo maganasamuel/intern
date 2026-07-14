@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\StudentStatus;
 use App\Models\{Course, Student};
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -28,6 +29,7 @@ class StudentFactory extends Factory
             'contact_number' => fake()->numerify('+639#########'),
             'email' => fake()->unique()->safeEmail(),
             'scholarship_accredited' => fake()->boolean(),
+            'status' => fake()->randomElement(StudentStatus::cases()),
         ];
     }
 }

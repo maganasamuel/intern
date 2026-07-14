@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\StudentStatus;
 use App\Http\Requests\SaveStudentRequest;
 use App\Models\{Course, Student};
 
@@ -16,13 +17,15 @@ class StudentController extends Controller
         $query = Student::filter(request('filter'))
             ->latest();
 
+        $statuses = StudentStatus::list();
+
         $students = $query->with('course')
             ->paginate()
             ->withQueryString();
 
         $title = 'Students';
 
-        return view('students.index', compact('title', 'genders', 'courses', 'students', 'query'));
+        return view('students.index', compact('title', 'genders', 'courses', 'students', 'statuses', 'query'));
     }
 
     public function show(Student $student)

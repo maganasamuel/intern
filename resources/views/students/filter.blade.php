@@ -3,7 +3,7 @@
   class="mb-3">
   <div class="card">
     <div class="card-body">
-      <div class="d-flex align-items-end">
+      <div class="d-flex align-items-end gap-3">
         <div class="row gy-3 flex-fill">
           <div class="col-lg-8">
             <label for="keyword"
@@ -58,8 +58,22 @@
               @endforeach
             </select>
           </div>
+          <div class="col-lg-4">
+            <label for="status"
+              class="form-label">Status</label>
+            <select id="status"
+              name="filter[status]"
+              class="form-control form-select form-select-sm">
+              <option value=""
+                @selected(!request('filter.status'))>- Select an option... -</option>
+              @foreach ($statuses as $key => $item)
+                <option value="{{ $key }}"
+                  @selected(request('filter.status') == $key)>{{ $item }}</option>
+              @endforeach
+            </select>
+          </div>
         </div>
-        <div>
+        <div class="text-nowrap">
           <button type="submit"
             class="btn btn-sm btn-secondary">Apply Filter</button>
           &nbsp;

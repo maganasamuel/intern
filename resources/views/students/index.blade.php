@@ -23,7 +23,7 @@
     </div>
 
     @include('students.filter')
-    
+
     <div class="table-responsive">
       <table class="table table-bordered table-striped table-hover">
         <thead>
@@ -36,6 +36,7 @@
             <th>Contact Number</th>
             <th>Scholarship Accredited</th>
             <th>Course</th>
+            <th>Status</th>
             <th>&nbsp;</th>
           </tr>
         </thead>
@@ -57,6 +58,7 @@
                   style="height: 1rem; width: 1rem;" />
               </td>
               <td>{{ $student->course->code }} - {{ $student->course->name }}</td>
+              <td><span @class(['badge', $student->status->color()])>{{ $student->status->label() }}</span></td>
               <td class="text-nowrap">
                 <div class="d-flex align-items-center gap-1">
                   <a href="{{ route('students.show', ['student' => $student->id]) }}"
