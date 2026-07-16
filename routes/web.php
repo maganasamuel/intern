@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ManualAuth\{ForgotPasswordController, LoginController, ResetPasswordController};
+use App\Http\Controllers\Students\LoginController as StudentsLoginController;
 use App\Http\Controllers\{StudentController, UploadImageController};
 use Illuminate\Support\Facades\{Route, Storage};
 
@@ -163,3 +164,20 @@ Route::get('file', function () {
 
     return Storage::json('orders/purchase.json');
 });
+
+Route::prefix('student')
+    ->name('student.')
+    ->group(function () {
+        Route::middleware(['guest'])
+            ->group(function () {
+                Route::get('login', [StudentsLoginController::class, 'form'])->name('login.form');
+                Route::post('login', [StudentsLoginController::class, 'login'])->name('login');
+            });
+
+        Route::middleware(['auth:student'])
+            ->group(function () {
+                Route::get('/', function () {
+                    return 'Hello ' . auth('student')->user()->full_name;
+                })->name('index');
+            });
+    });

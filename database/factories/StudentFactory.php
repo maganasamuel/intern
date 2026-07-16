@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Enums\StudentStatus;
 use App\Models\{Course, Student};
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Hash;
 
 /**
  * @extends Factory<Student>
@@ -30,6 +31,7 @@ class StudentFactory extends Factory
             'email' => fake()->unique()->safeEmail(),
             'scholarship_accredited' => fake()->boolean(),
             'status' => fake()->randomElement(StudentStatus::cases()),
+            'password' => Hash::make('password'),
         ];
     }
 }
